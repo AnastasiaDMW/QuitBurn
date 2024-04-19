@@ -54,6 +54,8 @@ class HomeViewModel(
         val MOOD_TODAY = booleanPreferencesKey(PREFERENCES_KEY_MOOD_TODAY)
     }
 
+    var isLoading: Boolean = true
+
     val allMood: LiveData<List<Mood>> = repositoryMood.getAllMood().asLiveData()
     val allProgress: LiveData<Progress> = repositoryProgress.getProgress().asLiveData()
 
@@ -173,7 +175,7 @@ class HomeViewModel(
     fun readIsCheckMoodToday(context: Context): Flow<Boolean> {
         return context.dataStore.data
             .map {preferences ->
-                preferences[MOOD_TODAY] ?: false
+                preferences[MOOD_TODAY] ?: true
             }
     }
 

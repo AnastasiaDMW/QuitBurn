@@ -50,6 +50,7 @@ class HourlyWorker(appContext: Context, workerParams: WorkerParameters): Worker(
         var days = 0
         var isCheckToday = false
         CoroutineScope(Dispatchers.IO).launch {
+            viewModel.changeValueIsCheckMoodToday(applicationContext, false)
             viewModel.readIsCheckMoodToday(applicationContext).collect { isCheck ->
                 isCheckToday = isCheck
                 Log.d("WORK", "Check today: $isCheckToday")

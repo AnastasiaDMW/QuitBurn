@@ -13,7 +13,7 @@ interface ProgressDao {
     @Update
     suspend fun updateProgress(progress: Progress)
 
-    @Query("SELECT * FROM progress WHERE id=0")
+    @Query("SELECT * FROM progress WHERE id=1")
     fun getProgress(): Flow<Progress>
 
     @Insert

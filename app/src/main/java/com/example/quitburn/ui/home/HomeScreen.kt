@@ -93,17 +93,19 @@ fun HomeScreen(
 //    navigateToStatistics: () -> Unit,
     permissionManager: PermissionManager,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(
-        factory = HomeViewModelProvider(
-            (LocalContext.current.applicationContext as QuitBurnApplication).moodRepository,
-            (LocalContext.current.applicationContext as QuitBurnApplication).progressRepository)
-    )
 ) {
     QuitBurnTheme {
         Scaffold(
             containerColor = colorResource(id = R.color.background),
             modifier = modifier
         ){  innerPadding ->
+
+            val viewModel: HomeViewModel = viewModel(
+                factory = HomeViewModelProvider(
+                    (LocalContext.current.applicationContext as QuitBurnApplication).moodRepository,
+                    (LocalContext.current.applicationContext as QuitBurnApplication).progressRepository)
+            )
+
             HomeBody(
                 permissionManager = permissionManager,
                 viewModel = viewModel,
@@ -134,6 +136,7 @@ fun HomeBody(permissionManager: PermissionManager, viewModel: HomeViewModel, mod
     }.launchIn(coroutine)
     viewModel.readIsCheckMoodToday(context).onEach {value ->
         isCheckMoodToday = value
+        viewModel.isLoading = false
     }.launchIn(coroutine)
     viewModel.readFactIndex(context).onEach {value ->
         factIndex = value
@@ -166,11 +169,10 @@ fun HomeContent(
     val circleColor = colorResource(id = R.color.background)
     val isVisible by remember { mutableStateOf(false) }
     var index by remember { mutableIntStateOf(0) }
-    var openAlertDialog by remember { mutableStateOf(false) }
     val shapeValue = remember { androidx.compose.animation.core.Animatable(1f) }
 //    val allMood by viewModel.allMood.observeAsState(listOf())
-//    val progress by viewModel.allProgress.observeAsState(null)
-//    var isCheckMoodToday by remember { mutableStateOf(false) }
+    val progress by viewModel.allProgress.observeAsState(null)
+    var openAlertDialog by remember { mutableStateOf(false) }
     var isShowAlertDialog by remember { mutableStateOf(false) }
     val colorList = listOf(
         colorResource(id = R.color.accent_btn),
@@ -230,27 +232,26 @@ fun HomeContent(
     }
 
 //    allMood = viewModel.checkTodayMood(allMood)
-
-    if (isSmoker){
-        Log.d("AAAA", "In is smoker")
-        if (!isCheckMoodToday) {
-            Log.d("AAAA", "In is check mood today")
-            if (!openAlertDialog) {
-                AlertDialogMood(
-                    context = context,
-                    viewModel = viewModel,
-                    onDismissRequest = { openAlertDialog = false },
-                    onConfirmation = {
-                        openAlertDialog = true
-                        runBlocking {
-                            viewModel.changeValueIsCheckMoodToday(context,true)
+    if (!viewModel.isLoading) {
+        if (!isSmoker){
+            if (!isCheckMoodToday) {
+                if (!openAlertDialog) {
+                    AlertDialogMood(
+                        context = context,
+                        viewModel = viewModel,
+                        onDismissRequest = { openAlertDialog = false },
+                        onConfirmation = {
+                            openAlertDialog = true
+                            runBlocking {
+                                viewModel.changeValueIsCheckMoodToday(context,true)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
-//            isCheckMoodToday = false
         }
     }
+
 
     Column(
         modifier = modifier
@@ -268,18 +269,21 @@ fun HomeContent(
                         viewModel.changeValueIsCheckMoodToday(context, false)
                     }
                     viewModel.startWorkManager(context)
-//                    if (progress == null) {
-//                        viewModel.insertProgress(ProgressDetail(
-//                            startDate = viewModel.getCurrentDate(),
-//                            countStop = 0
-//                        ).toProgress())
-//                    }
-//                    else {
-//                        viewModel.updateProgress(ProgressDetail(
-//                            startDate = viewModel.getCurrentDate(),
-//                            countStop = progress!!.countStop
-//                        ).toProgress())
-//                    }
+                    if (progress == null) {
+                        viewModel.insertProgress(ProgressDetail(
+                            startDate = viewModel.getCurrentDate(),
+                            maxCountDays = days,
+                            countStop = 0
+                        ).toProgress())
+                    }
+                    else {
+                        val countStop = progress!!.countStop
+                        viewModel.updateProgress(ProgressDetail(
+                            startDate = viewModel.getCurrentDate(),
+                            maxCountDays = days,
+                            countStop = countStop
+                        ).toProgress())
+                    }
                 },
                 color = R.color.accent_btn,
                 text = R.string.btn_start
@@ -288,15 +292,19 @@ fun HomeContent(
             HomeButtons(
                 modifier = Modifier,
                 onClick = {
+
+                    val countStop = progress!!.countStop + 1
+                    viewModel.stopWorkManager(context)
+                    viewModel.updateProgress(ProgressDetail(
+                        startDate = viewModel.getCurrentDate(),
+                        maxCountDays = days,
+                        countStop = countStop
+                    ).toProgress())
                     runBlocking {
                         viewModel.changeValueIsSmoker(context)
                         viewModel.clearCounter(context)
+                        viewModel.changeValueIsCheckMoodToday(context, true)
                     }
-                    viewModel.stopWorkManager(context)
-//                    viewModel.updateProgress(ProgressDetail(
-//                        startDate = "",
-//                        countStop = progress!!.countStop + 1
-//                    ).toProgress())
                 },
                 color = R.color.additional_btn,
                 text = R.string.btn_end
@@ -639,7 +647,7 @@ fun HomeBodyPreview() {
         HomeContent(
             Modifier,
             PermissionManager(LocalContext.current as MainActivity),
-            viewModel(), 2, 28,true,
+            viewModel(),  2, 28,true,
             true,
             LocalContext.current
         )

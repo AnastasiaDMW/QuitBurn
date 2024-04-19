@@ -11,5 +11,7 @@ data class Progress(
     @ColumnInfo("start_date")
     val startDate: String,
     @ColumnInfo("count_stop")
-    val countStop: Int
+    val countStop: Int,
+    @ColumnInfo("max_count_days")
+    val maxCountDays: Int,
 )
