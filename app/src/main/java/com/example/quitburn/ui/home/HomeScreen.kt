@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -169,6 +170,7 @@ fun HomeContent(
     var index by remember { mutableIntStateOf(0) }
     val shapeValue = remember { androidx.compose.animation.core.Animatable(1f) }
     val progress by viewModel.allProgress.observeAsState(null)
+    Log.d("AAAA", "progress: $progress")
     var openAlertDialog by remember { mutableStateOf(false) }
     var isShowAlertDialog by remember { mutableStateOf(false) }
     val colorList = listOf(

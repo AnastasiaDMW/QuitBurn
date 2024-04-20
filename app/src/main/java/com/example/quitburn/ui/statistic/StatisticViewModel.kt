@@ -6,13 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import com.example.quitburn.model.Mood
 import com.example.quitburn.model.Progress
-import com.example.quitburn.repository.OfflineMoodRepository
-import com.example.quitburn.repository.OfflineProgressRepository
-import com.example.quitburn.ui.home.HomeViewModel
+import com.example.quitburn.repository.MoodRepository
+import com.example.quitburn.repository.ProgressRepository
 
 class StatisticViewModel(
-    private val repositoryMood: OfflineMoodRepository,
-    private val repositoryProgress: OfflineProgressRepository
+    private val repositoryMood: MoodRepository,
+    private val repositoryProgress: ProgressRepository
 ): ViewModel() {
 
     val allProgress: LiveData<Progress> = repositoryProgress.getProgress().asLiveData()
@@ -21,8 +20,8 @@ class StatisticViewModel(
 }
 
 class StatisticViewModelProvider(
-    private val repositoryMood: OfflineMoodRepository,
-    private val repositoryProgress: OfflineProgressRepository
+    private val repositoryMood: MoodRepository,
+    private val repositoryProgress: ProgressRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(StatisticViewModel::class.java)){

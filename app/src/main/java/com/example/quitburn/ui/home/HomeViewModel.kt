@@ -11,13 +11,10 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
@@ -30,12 +27,11 @@ import com.example.quitburn.Constant.PREFERENCES_KEY_MOOD_TODAY
 import com.example.quitburn.Constant.PREFERENCES_KEY_SMOKER
 import com.example.quitburn.Constant.UNIQUE_WORK_NAME
 import com.example.quitburn.Constant.motivationList
-import com.example.quitburn.QuitBurnApplication
 import com.example.quitburn.data.HourlyWorker
 import com.example.quitburn.model.Mood
 import com.example.quitburn.model.Progress
-import com.example.quitburn.repository.OfflineMoodRepository
-import com.example.quitburn.repository.OfflineProgressRepository
+import com.example.quitburn.repository.MoodRepository
+import com.example.quitburn.repository.ProgressRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -46,8 +42,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class HomeViewModel(
-    private val repositoryMood: OfflineMoodRepository,
-    private val repositoryProgress: OfflineProgressRepository
+    private val repositoryMood: MoodRepository,
+    private val repositoryProgress: ProgressRepository
 ): ViewModel() {
 
     companion object {
@@ -194,8 +190,8 @@ class HomeViewModel(
 }
 
 class HomeViewModelProvider(
-    private val repositoryMood: OfflineMoodRepository,
-    private val repositoryProgress: OfflineProgressRepository
+    private val repositoryMood: MoodRepository,
+    private val repositoryProgress: ProgressRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java)){

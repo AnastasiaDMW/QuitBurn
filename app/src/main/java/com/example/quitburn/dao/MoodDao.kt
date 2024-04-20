@@ -7,12 +7,8 @@ import com.example.quitburn.model.Mood
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface MoodDao {
-
-    @Insert
-    suspend fun insertMood(mood: Mood)
-
+abstract class MoodDao: BaseDao<Mood> {
     @Query("SELECT * FROM mood")
-    fun getAllMood(): Flow<List<Mood>>
+    abstract fun getAllMood(): Flow<List<Mood>>
 
 }

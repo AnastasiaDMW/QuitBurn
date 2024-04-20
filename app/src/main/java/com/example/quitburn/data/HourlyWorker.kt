@@ -5,8 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -17,16 +15,12 @@ import com.example.quitburn.Constant.NOTIFICATION_ID
 import com.example.quitburn.MainActivity
 import com.example.quitburn.QuitBurnApplication
 import com.example.quitburn.R
-import com.example.quitburn.repository.OfflineMoodRepository
-import com.example.quitburn.repository.OfflineProgressRepository
+import com.example.quitburn.repository.MoodRepository
+import com.example.quitburn.repository.ProgressRepository
 import com.example.quitburn.ui.home.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class HourlyWorker(appContext: Context, workerParams: WorkerParameters): Worker(appContext, workerParams) {
 
@@ -44,8 +38,8 @@ class HourlyWorker(appContext: Context, workerParams: WorkerParameters): Worker(
             .setAutoCancel(true)
 
         val viewModel = HomeViewModel(
-            OfflineMoodRepository(QuitBurnApplication().database.moodDao()),
-            OfflineProgressRepository(QuitBurnApplication().database.progressDao())
+            MoodRepository(QuitBurnApplication().database.moodDao()),
+            ProgressRepository(QuitBurnApplication().database.progressDao())
         )
         var days = 0
         var isCheckToday = false

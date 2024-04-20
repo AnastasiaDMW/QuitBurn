@@ -1,22 +1,16 @@
 package com.example.quitburn.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.example.quitburn.model.Progress
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ProgressDao {
-
+abstract class ProgressDao: BaseDao<Progress> {
     @Update
-    suspend fun updateProgress(progress: Progress)
+    abstract suspend fun updateProgress(progress: Progress)
 
     @Query("SELECT * FROM progress WHERE id=1")
-    fun getProgress(): Flow<Progress>
-
-    @Insert
-    suspend fun insertProgress(progress: Progress)
-
+    abstract fun getProgress(): Flow<Progress>
 }
