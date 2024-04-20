@@ -77,17 +77,6 @@ class HomeViewModel(
         return dateFormat.format(currentDate)
     }
 
-    fun checkTodayMood(moods: List<Mood>): Boolean {
-        val currentDate = getCurrentDate()
-        for (mood in moods) {
-            if (currentDate == mood.date) {
-                return true
-            }
-        }
-
-        return false
-    }
-
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "channel"

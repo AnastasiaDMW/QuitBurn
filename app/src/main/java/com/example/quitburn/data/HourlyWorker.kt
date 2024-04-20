@@ -53,19 +53,13 @@ class HourlyWorker(appContext: Context, workerParams: WorkerParameters): Worker(
             viewModel.changeValueIsCheckMoodToday(applicationContext, false)
             viewModel.readIsCheckMoodToday(applicationContext).collect { isCheck ->
                 isCheckToday = isCheck
-                Log.d("WORK", "Check today: $isCheckToday")
 
-                // После получения значения isCheckToday выполняем остальной код
                 viewModel.incrementCounter(applicationContext)
-                Log.d("WORK", "incrementCounter")
                 viewModel.selectRandomFact(applicationContext)
-                Log.d("WORK", "selectRandomFact")
                 viewModel.readCounter(applicationContext).collect { count ->
                     days = count
                     if (!isCheckToday) {
-                        Log.d("WORK", "Зашел в not isCheckedToday, days = $days")
                         if (count > 1) {
-                            Log.d("WORK", "Зашел в day > 1")
                             viewModel.createNotificationChannel(applicationContext)
                             with(NotificationManagerCompat.from(applicationContext)) {
                                 if (ActivityCompat.checkSelfPermission(
@@ -79,65 +73,9 @@ class HourlyWorker(appContext: Context, workerParams: WorkerParameters): Worker(
                             }
                         }
                     }
-                    Log.d("WORK", "Count days: $days")
                 }
             }
         }
-
-//        CoroutineScope(Dispatchers.IO).launch {
-//            viewModel.readIsCheckMoodToday(applicationContext).collect { isCheck ->
-//                isCheckToday = isCheck
-//                Log.d("WORK", "Check today: $isCheckToday")
-//            }
-//            viewModel.incrementCounter(applicationContext)
-//            Log.d("WORK", "incrementCounter")
-//            viewModel.selectRandomFact(applicationContext)
-//            Log.d("WORK", "selectRandomFact")
-//            viewModel.readCounter(applicationContext).collect { count ->
-//                days = count
-//                if (!isCheckToday) {
-//                    Log.d("WORK", "Зашел в not isCheckedToday, days = $days")
-//                    if (count > 2) {
-//                        Log.d("WORK", "Зашел в day > 1")
-//                        viewModel.createNotificationChannel(applicationContext)
-//                        with(NotificationManagerCompat.from(applicationContext)) {
-//                            if (ActivityCompat.checkSelfPermission(
-//                                    applicationContext,
-//                                    Manifest.permission.POST_NOTIFICATIONS
-//                                ) != PackageManager.PERMISSION_GRANTED
-//                            ) {
-//                                return@with
-//                            }
-//                            notify(NOTIFICATION_ID, builder.build())
-//                        }
-//                    }
-//                }
-//                Log.d("WORK", "Count days: $days")
-//            }
-//            Log.d("WORK", "readCounter")
-////            viewModel.readIsCheckMoodToday(applicationContext).collect { isCheck ->
-////                isCheckToday = isCheck
-////                Log.d("WORK", "Check today: $isCheckToday")
-////            }
-//
-////            if (!isCheckToday) {
-////                Log.d("WORK", "Зашел в not isCheckedToday, days = $days")
-////                if (days > 1) {
-////                    Log.d("WORK", "Зашел в day > 1")
-////                    viewModel.createNotificationChannel(applicationContext)
-////                    with(NotificationManagerCompat.from(applicationContext)) {
-////                        if (ActivityCompat.checkSelfPermission(
-////                                applicationContext,
-////                                Manifest.permission.POST_NOTIFICATIONS
-////                            ) != PackageManager.PERMISSION_GRANTED
-////                        ) {
-////                            return@with
-////                        }
-////                        notify(NOTIFICATION_ID, builder.build())
-////                    }
-////                }
-////            }
-//        }
 
         return Result.success()
     }

@@ -170,7 +170,6 @@ fun HomeContent(
     val isVisible by remember { mutableStateOf(false) }
     var index by remember { mutableIntStateOf(0) }
     val shapeValue = remember { androidx.compose.animation.core.Animatable(1f) }
-//    val allMood by viewModel.allMood.observeAsState(listOf())
     val progress by viewModel.allProgress.observeAsState(null)
     var openAlertDialog by remember { mutableStateOf(false) }
     var isShowAlertDialog by remember { mutableStateOf(false) }
@@ -231,7 +230,6 @@ fun HomeContent(
         }
     }
 
-//    allMood = viewModel.checkTodayMood(allMood)
     if (!viewModel.isLoading) {
         if (!isSmoker){
             if (!isCheckMoodToday) {
