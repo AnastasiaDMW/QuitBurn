@@ -16,6 +16,7 @@
     <string name="dialog_permission_desc">Статистика</string>
     <string name="btn_next">Далее</string>
     <string name="notification_desc">"Не забудьте оценить ваше настроение! \uD83D\uDC4B"</string>
+    <string name="statistic">Статистика</string>
 
     <string name="star_mood">Настроение лучше некуда</string>
     <string name="smile_mood">Счастлив</string>

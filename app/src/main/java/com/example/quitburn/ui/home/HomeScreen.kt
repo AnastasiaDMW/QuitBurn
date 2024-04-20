@@ -2,12 +2,9 @@ package com.example.quitburn.ui.home
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -40,14 +37,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -75,9 +69,7 @@ import com.example.quitburn.QuitBurnApplication
 import com.example.quitburn.R
 import com.example.quitburn.data.MoodEnum
 import com.example.quitburn.data.PermissionManager
-import com.example.quitburn.model.Mood
 import com.example.quitburn.model.MoodDetails
-import com.example.quitburn.model.Progress
 import com.example.quitburn.model.ProgressDetail
 import com.example.quitburn.model.toMood
 import com.example.quitburn.model.toProgress
@@ -90,9 +82,14 @@ import kotlinx.coroutines.runBlocking
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun HomeScreen(
-//    navigateToStatistics: () -> Unit,
+    navigateToStatisticScreen: () -> Unit,
     permissionManager: PermissionManager,
     modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = viewModel(
+        factory = HomeViewModelProvider(
+            (LocalContext.current.applicationContext as QuitBurnApplication).moodRepository,
+            (LocalContext.current.applicationContext as QuitBurnApplication).progressRepository)
+    )
 ) {
     QuitBurnTheme {
         Scaffold(
@@ -100,13 +97,8 @@ fun HomeScreen(
             modifier = modifier
         ){  innerPadding ->
 
-            val viewModel: HomeViewModel = viewModel(
-                factory = HomeViewModelProvider(
-                    (LocalContext.current.applicationContext as QuitBurnApplication).moodRepository,
-                    (LocalContext.current.applicationContext as QuitBurnApplication).progressRepository)
-            )
-
             HomeBody(
+                navigateToStatisticScreen,
                 permissionManager = permissionManager,
                 viewModel = viewModel,
                 modifier = modifier
@@ -120,7 +112,11 @@ fun HomeScreen(
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun HomeBody(permissionManager: PermissionManager, viewModel: HomeViewModel, modifier: Modifier) {
+fun HomeBody(
+    navigateToStatisticScreen: () -> Unit,
+    permissionManager: PermissionManager,
+    viewModel: HomeViewModel,
+    modifier: Modifier) {
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
     var days by remember { mutableIntStateOf(0) }
@@ -144,6 +140,7 @@ fun HomeBody(permissionManager: PermissionManager, viewModel: HomeViewModel, mod
 
     HomeContent(
         modifier = modifier,
+        navigateToStatisticScreen,
         permissionManager = permissionManager,
         viewModel = viewModel,
         days = days,
@@ -158,6 +155,7 @@ fun HomeBody(permissionManager: PermissionManager, viewModel: HomeViewModel, mod
 @Composable
 fun HomeContent(
     modifier:Modifier = Modifier,
+    navigateToStatisticScreen: () -> Unit,
     permissionManager: PermissionManager,
     viewModel: HomeViewModel,
     days: Int,
@@ -321,7 +319,7 @@ fun HomeContent(
                     modifier = Modifier
                         .size(185.dp)
                         .clickable {
-                            // Здесь переход на другую страницу
+                            navigateToStatisticScreen()
                         }
                 ) {
                     val canvasWidth = size.width
@@ -644,10 +642,11 @@ fun HomeBodyPreview() {
     QuitBurnTheme {
         HomeContent(
             Modifier,
+            {},
             PermissionManager(LocalContext.current as MainActivity),
-            viewModel(),  2, 28,true,
-            true,
-            LocalContext.current
+            viewModel(),  2, 28, isSmoker = true,
+            isCheckMoodToday = true,
+            context = LocalContext.current
         )
     }
 }
