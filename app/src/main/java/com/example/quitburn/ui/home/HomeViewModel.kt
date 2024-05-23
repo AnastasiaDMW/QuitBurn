@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -89,6 +91,7 @@ class HomeViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun startWorkManager(context: Context) {
         val workManager = WorkManager.getInstance(context)
 
@@ -98,10 +101,14 @@ class HomeViewModel(
             .setRequiresBatteryNotLow(false)
             .setRequiresDeviceIdle(false)
             .setRequiresStorageNotLow(false)
+            .setRequiresStorageNotLow(false)
+            .setRequiresDeviceIdle(false)
+            .setTriggerContentMaxDelay(Duration.ofHours(24L))
+            .setTriggerContentUpdateDelay(Duration.ofHours(24L))
             .build()
 
         val periodicWorkRequestBuilder =
-            PeriodicWorkRequestBuilder<HourlyWorker>(10, TimeUnit.MINUTES)
+            PeriodicWorkRequestBuilder<HourlyWorker>(1, TimeUnit.DAYS)
 
         val periodicWorkRequest = periodicWorkRequestBuilder.setConstraints(constraints).build()
         workManager.enqueueUniquePeriodicWork(

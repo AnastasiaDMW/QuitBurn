@@ -29,11 +29,12 @@ class HourlyWorker(appContext: Context, workerParams: WorkerParameters): Worker(
         val intent = Intent(applicationContext, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+
         val pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         val builder = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.logo)
             .setContentTitle(applicationContext.getString(R.string.notification_desc))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
 
@@ -70,8 +71,6 @@ class HourlyWorker(appContext: Context, workerParams: WorkerParameters): Worker(
                 }
             }
         }
-
         return Result.success()
     }
-
 }
