@@ -1,6 +1,9 @@
 package com.example.quitburn
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import com.example.quitburn.database.QuitBurnDatabase
 import com.example.quitburn.repository.MoodRepository
 import com.example.quitburn.repository.ProgressRepository

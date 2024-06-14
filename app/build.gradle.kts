@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     kotlin("kapt")
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -71,6 +73,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.firebase.crashlytics)
     kapt(libs.androidx.room.compiler)
     //Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)

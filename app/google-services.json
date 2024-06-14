@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "178972550385",
+    "project_id": "quitburn-32981",
+    "storage_bucket": "quitburn-32981.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178972550385:android:9ab691ccdaed67f2ab3550",
+        "android_client_info": {
+          "package_name": "com.example.quitburn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQMz9MwcQ8pDF-PirNwOkfnNiAMzj9cAA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

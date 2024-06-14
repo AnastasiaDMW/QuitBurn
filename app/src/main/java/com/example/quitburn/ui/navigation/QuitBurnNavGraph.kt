@@ -11,12 +11,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.quitburn.data.PermissionManager
 import com.example.quitburn.ui.home.HomeScreen
+import com.example.quitburn.ui.home.HomeViewModel
 import com.example.quitburn.ui.statistic.StatisticScreen
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun QuitBurnNavHost(
     permissionManager: PermissionManager,
+    viewModel: HomeViewModel,
     navController: NavHostController
 ) {
     NavHost(
@@ -24,7 +26,11 @@ fun QuitBurnNavHost(
         startDestination = HomeDestination.route
     ){
         composable(route = HomeDestination.route) {
-            HomeScreen({navController.navigate(StatisticDestination.route)}, permissionManager)
+            HomeScreen(
+                {navController.navigate(StatisticDestination.route)},
+                viewModel = viewModel,
+                permissionManager = permissionManager
+            )
         }
         composable(route = StatisticDestination.route) {
             StatisticScreen(navigateBack = { navController.popBackStack() })

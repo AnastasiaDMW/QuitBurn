@@ -15,6 +15,10 @@ lifecycle = "2.7.0"
 livedata = "1.6.5"
 rxjava = "1.0.0"
 composeBom = "2023.08.00"
+firebaseCrashlytics = "19.0.1"
+gradle = "8.1.0"
+googleServices = "4.4.2"
+firebaseCrashlyticsGradle = "3.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +49,10 @@ androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtim
 androidx-datastore-preferences-rxjava2 = { group = "androidx.datastore", name = "datastore-preferences-rxjava2", version.ref = "rxjava" }
 androidx-datastore-preferences-rxjava3 = { group = "androidx.datastore", name = "datastore-preferences-rxjava3", version.ref = "rxjava" }
 androidx-datastore-preferences-core = { group = "androidx.datastore", name = "datastore-preferences-core", version.ref = "rxjava" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebaseCrashlytics" }
+gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "gradle" }
+google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
+firebase-crashlytics-gradle = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsGradle" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

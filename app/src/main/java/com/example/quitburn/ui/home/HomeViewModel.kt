@@ -1,7 +1,5 @@
 package com.example.quitburn.ui.home
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -21,13 +19,12 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.quitburn.Constant.CHANNEL_ID
 import com.example.quitburn.Constant.PREFERENCES_KEY_COUNTER
 import com.example.quitburn.Constant.PREFERENCES_KEY_FACT_INDEX
 import com.example.quitburn.Constant.PREFERENCES_KEY_MOOD_TODAY
 import com.example.quitburn.Constant.PREFERENCES_KEY_SMOKER
 import com.example.quitburn.Constant.UNIQUE_WORK_NAME
-import com.example.quitburn.Constant.motivationList
+import com.example.quitburn.data.DataStoreManager
 import com.example.quitburn.data.HourlyWorker
 import com.example.quitburn.model.Mood
 import com.example.quitburn.model.Progress
@@ -37,17 +34,22 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.Duration
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 
 class HomeViewModel(
     private val repositoryMood: MoodRepository,
     private val repositoryProgress: ProgressRepository
 ): ViewModel() {
+    private lateinit var workManager: WorkManager
+    private val constraints = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+        .build()
 
+    fun setWorkManager(workManager: WorkManager) {
+        this.workManager = workManager
+    }
     companion object {
         val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
         val COUNTER = intPreferencesKey(PREFERENCES_KEY_COUNTER)
@@ -78,44 +80,23 @@ class HomeViewModel(
         return dateFormat.format(currentDate)
     }
 
-    fun createNotificationChannel(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "channel"
-            val descriptionText = "mood channel"
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    fun startWorkManager(context: Context) {
-        val workManager = WorkManager.getInstance(context)
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
-            .setRequiresCharging(false)
-            .setRequiresBatteryNotLow(false)
-            .setRequiresDeviceIdle(false)
-            .setRequiresStorageNotLow(false)
-            .setRequiresStorageNotLow(false)
-            .setRequiresDeviceIdle(false)
-            .setTriggerContentMaxDelay(Duration.ofHours(24L))
-            .setTriggerContentUpdateDelay(Duration.ofHours(24L))
+    fun startWorkManager() {
+        val workRequest = PeriodicWorkRequestBuilder<HourlyWorker>(
+            repeatInterval = 15,
+            TimeUnit.MINUTES
+        )
+            .setConstraints(constraints)
             .build()
 
-        val periodicWorkRequestBuilder =
-            PeriodicWorkRequestBuilder<HourlyWorker>(1, TimeUnit.DAYS)
-
-        val periodicWorkRequest = periodicWorkRequestBuilder.setConstraints(constraints).build()
         workManager.enqueueUniquePeriodicWork(
             UNIQUE_WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP,
-            periodicWorkRequest
-        )
+            ExistingPeriodicWorkPolicy.REPLACE,
+            workRequest)
+    }
+
+    fun stopWorkManager() {
+        workManager.cancelUniqueWork(UNIQUE_WORK_NAME)
     }
 
     fun getDayString(number: Int): String {
@@ -128,12 +109,6 @@ class HomeViewModel(
         }
     }
 
-    suspend fun selectRandomFact(context: Context) {
-        context.dataStore.edit { settings ->
-            settings[FACT_INDEX] = Random.nextInt(motivationList.size-1)
-        }
-    }
-
     fun readFactIndex(context: Context): Flow<Int> {
         return context.dataStore.data
             .map { preferences ->
@@ -141,24 +116,9 @@ class HomeViewModel(
             }
     }
 
-    fun stopWorkManager(context: Context) {
-        val workManager = WorkManager.getInstance(context)
-        workManager.cancelUniqueWork(UNIQUE_WORK_NAME)
-        workManager.cancelAllWorkByTag(UNIQUE_WORK_NAME)
-    }
-
     fun readCounter(context: Context): Flow<Int> {
-        return context.dataStore.data
-            .map { preferences ->
-                preferences[COUNTER] ?: 0
-            }
-    }
-
-    suspend fun incrementCounter(context: Context) {
-        context.dataStore.edit { settings ->
-            val currentCounterValue = settings[COUNTER] ?: 0
-            settings[COUNTER] = currentCounterValue + 1
-        }
+        val dataStoreManager = DataStoreManager(context)
+        return dataStoreManager.readCounter()
     }
 
     suspend fun clearCounter(context: Context) {
@@ -175,10 +135,8 @@ class HomeViewModel(
     }
 
     suspend fun changeValueIsCheckMoodToday(context: Context, value: Boolean) {
-        context.dataStore.edit { settings ->
-//            val currentValue = settings[MOOD_TODAY] ?: false
-            settings[MOOD_TODAY] = value
-        }
+        val dataStoreManager = DataStoreManager(context)
+        dataStoreManager.changeValueIsCheckMoodToday(value)
     }
 
     fun readIsSmoker(context: Context): Flow<Boolean> {

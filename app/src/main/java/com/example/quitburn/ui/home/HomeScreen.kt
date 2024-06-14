@@ -75,9 +75,12 @@ import com.example.quitburn.model.ProgressDetail
 import com.example.quitburn.model.toMood
 import com.example.quitburn.model.toProgress
 import com.example.quitburn.ui.theme.QuitBurnTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -85,12 +88,8 @@ import kotlinx.coroutines.runBlocking
 fun HomeScreen(
     navigateToStatisticScreen: () -> Unit,
     permissionManager: PermissionManager,
+    viewModel: HomeViewModel,
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(
-        factory = HomeViewModelProvider(
-            (LocalContext.current.applicationContext as QuitBurnApplication).moodRepository,
-            (LocalContext.current.applicationContext as QuitBurnApplication).progressRepository)
-    )
 ) {
     QuitBurnTheme {
         Scaffold(
@@ -170,7 +169,7 @@ fun HomeContent(
     var index by remember { mutableIntStateOf(0) }
     val shapeValue = remember { androidx.compose.animation.core.Animatable(1f) }
     val progress by viewModel.allProgress.observeAsState(null)
-    Log.d("AAAA", "progress: $progress")
+//    Log.d("AAAA", "progress: $progress")
     var openAlertDialog by remember { mutableStateOf(false) }
     var isShowAlertDialog by remember { mutableStateOf(false) }
     val colorList = listOf(
@@ -262,11 +261,11 @@ fun HomeContent(
             HomeButtons(
                 modifier = Modifier,
                 onClick = {
-                    runBlocking {
+                    viewModel.startWorkManager()
+                    CoroutineScope(Dispatchers.IO).launch {
                         viewModel.changeValueIsSmoker(context)
                         viewModel.changeValueIsCheckMoodToday(context, false)
                     }
-                    viewModel.startWorkManager(context)
                     if (progress == null) {
                         viewModel.insertProgress(ProgressDetail(
                             startDate = viewModel.getCurrentDate(),
@@ -292,7 +291,7 @@ fun HomeContent(
                 onClick = {
 
                     val countStop = progress!!.countStop + 1
-                    viewModel.stopWorkManager(context)
+                    viewModel.stopWorkManager()
                     viewModel.updateProgress(ProgressDetail(
                         startDate = viewModel.getCurrentDate(),
                         maxCountDays = days,
