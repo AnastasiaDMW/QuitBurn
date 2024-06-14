@@ -83,8 +83,8 @@ class HomeViewModel(
     @RequiresApi(Build.VERSION_CODES.O)
     fun startWorkManager() {
         val workRequest = PeriodicWorkRequestBuilder<HourlyWorker>(
-            repeatInterval = 15,
-            TimeUnit.MINUTES
+            repeatInterval = 1,
+            TimeUnit.DAYS
         )
             .setConstraints(constraints)
             .build()
