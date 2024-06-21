@@ -14,6 +14,7 @@
 * WorkManager
 * Lifecycle
 * Material3
+* MPAndroidChart
 * Compose  
 
 Пока в процессе разработки..
