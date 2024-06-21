@@ -85,6 +85,8 @@ dependencies {
     // optional - RxJava3 support
     implementation(libs.androidx.datastore.preferences.rxjava3)
     implementation(libs.androidx.datastore.preferences.core)
+    //MPAndroidChart
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

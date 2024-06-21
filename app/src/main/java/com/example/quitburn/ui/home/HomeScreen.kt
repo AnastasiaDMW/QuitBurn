@@ -71,6 +71,7 @@ import com.example.quitburn.R
 import com.example.quitburn.data.MoodEnum
 import com.example.quitburn.data.PermissionManager
 import com.example.quitburn.model.MoodDetails
+import com.example.quitburn.model.Progress
 import com.example.quitburn.model.ProgressDetail
 import com.example.quitburn.model.toMood
 import com.example.quitburn.model.toProgress
@@ -233,6 +234,14 @@ fun HomeContent(
         if (!isSmoker){
             if (!isCheckMoodToday) {
                 if (!openAlertDialog) {
+                    viewModel.updateProgress(
+                        Progress(
+                            id = progress!!.id,
+                            startDate = progress!!.startDate,
+                            countStop = progress!!.countStop,
+                            maxCountDays = days
+                        )
+                    )
                     AlertDialogMood(
                         context = context,
                         viewModel = viewModel,
@@ -500,7 +509,7 @@ fun AlertDialogMood(
                             .padding(start = 5.dp, end = 5.dp)
                             .clickable { mood = MoodEnum.SMILE },
                         painter = painterResource(R.drawable.smile),
-                        contentDescription = stringResource(R.string.star_mood)
+                        contentDescription = stringResource(R.string.smile_mood)
                     )
                     Image(
                         modifier = Modifier
@@ -508,7 +517,7 @@ fun AlertDialogMood(
                             .padding(start = 5.dp, end = 5.dp)
                             .clickable { mood = MoodEnum.HAPPY },
                         painter = painterResource(R.drawable.happy),
-                        contentDescription = stringResource(R.string.star_mood)
+                        contentDescription = stringResource(R.string.happy_mood)
                     )
                     Image(
                         modifier = Modifier
@@ -516,7 +525,7 @@ fun AlertDialogMood(
                             .padding(start = 5.dp, end = 5.dp)
                             .clickable { mood = MoodEnum.DISAPPOINTED },
                         painter = painterResource(R.drawable.disappointed),
-                        contentDescription = stringResource(R.string.star_mood)
+                        contentDescription = stringResource(R.string.disappointed_mood)
                     )
                 }
                 Row(
@@ -530,7 +539,7 @@ fun AlertDialogMood(
                             .padding(start = 5.dp, end = 5.dp)
                             .clickable { mood = MoodEnum.MAD },
                         painter = painterResource(R.drawable.mad),
-                        contentDescription = stringResource(R.string.star_mood)
+                        contentDescription = stringResource(R.string.mad_mood)
                     )
                     Image(
                         modifier = Modifier
@@ -538,7 +547,7 @@ fun AlertDialogMood(
                             .padding(start = 5.dp, end = 5.dp)
                             .clickable { mood = MoodEnum.CRY },
                         painter = painterResource(R.drawable.cry),
-                        contentDescription = stringResource(R.string.star_mood)
+                        contentDescription = stringResource(R.string.cry_mood)
                     )
                     Image(
                         modifier = Modifier
@@ -546,7 +555,7 @@ fun AlertDialogMood(
                             .padding(start = 5.dp, end = 5.dp)
                             .clickable { mood = MoodEnum.NAUSEA },
                         painter = painterResource(R.drawable.nausea),
-                        contentDescription = stringResource(R.string.star_mood)
+                        contentDescription = stringResource(R.string.nausea_mood)
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))

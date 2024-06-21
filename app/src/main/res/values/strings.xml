@@ -17,6 +17,7 @@
     <string name="btn_next">Далее</string>
     <string name="notification_desc">"Не забудьте оценить ваше настроение! \uD83D\uDC4B"</string>
     <string name="statistic">Статистика</string>
+    <string name="help_user">Помощь</string>
 
     <string name="star_mood">Настроение лучше некуда</string>
     <string name="smile_mood">Счастлив</string>
@@ -25,6 +26,8 @@
     <string name="cry_mood">Хочется плакать</string>
     <string name="nausea_mood">Очень плохо</string>
     <string name="mad_mood">Злой</string>
+
+    <string name="mood_statistic">Статистика дней</string>
 
     <string name="motivation_word1">Наслаждайтесь каждым моментом. Напоминайте себе, как чудесно вновь стать свободным. Радуйтесь, что вам больше не придется душить самого себя.</string>
     <string name="motivation_word2">Сигареты не заполняют пустоту, они ее создают!</string>
