@@ -13,4 +13,8 @@ class MoodRepository(private val moodDao: MoodDao) {
     fun getAllMood(): Flow<List<Mood>> {
         return moodDao.getAllMood()
     }
+
+    suspend fun deleteAllMood() {
+        moodDao.deleteAllMood()
+    }
 }

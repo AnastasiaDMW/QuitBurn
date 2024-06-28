@@ -1,6 +1,7 @@
 package com.example.quitburn.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
 import com.example.quitburn.model.Progress
@@ -13,4 +14,7 @@ abstract class ProgressDao: BaseDao<Progress> {
 
     @Query("SELECT * FROM progress WHERE id=1")
     abstract fun getProgress(): Flow<Progress>
+
+    @Query("DELETE FROM progress WHERE id=1")
+    abstract suspend fun deleteProgressById()
 }

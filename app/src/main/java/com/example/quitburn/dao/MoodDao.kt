@@ -11,4 +11,6 @@ abstract class MoodDao: BaseDao<Mood> {
     @Query("SELECT * FROM mood")
     abstract fun getAllMood(): Flow<List<Mood>>
 
+    @Query("DELETE FROM mood")
+    abstract suspend fun deleteAllMood()
 }

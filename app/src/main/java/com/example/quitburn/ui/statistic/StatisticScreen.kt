@@ -149,7 +149,15 @@ fun StatisticBody(
                     contentDescription = context.getString(R.string.help_user)
                 )
             }
-
+        }
+        if (viewModel.diagramList.isEmpty() && progress == null) {
+            Spacer(modifier = Modifier.height(100.dp))
+            Text(
+                text = stringResource(id = R.string.empty_data),
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
         if (viewModel.diagramList.isNotEmpty()) {
             StatisticsBarChart(viewModel.diagramList, context)

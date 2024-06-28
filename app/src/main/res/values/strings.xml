@@ -27,6 +27,7 @@
     <string name="ru_number">8-800-200-0-200</string>
     <string name="en_help_text">Quit Smoking Hotline and Support for Smokers:</string>
     <string name="en_number">1-800-784-8669</string>
+    <string name="empty_data">Пока ничего нет</string>
 
     <string name="star_mood">Настроение лучше некуда</string>
     <string name="smile_mood">Счастлив</string>

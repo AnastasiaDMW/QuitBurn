@@ -14,6 +14,10 @@ class ProgressRepository(private val progressDao: ProgressDao) {
         return progressDao.getProgress()
     }
 
+    suspend fun deleteProgress() {
+        progressDao.deleteProgressById()
+    }
+
     suspend fun insertProgress(progress: Progress) {
         progressDao.insert(progress)
     }

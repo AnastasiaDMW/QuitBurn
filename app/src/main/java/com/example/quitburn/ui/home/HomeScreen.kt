@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -65,6 +66,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.quitburn.Constant.motivationList
 import com.example.quitburn.MainActivity
+import com.example.quitburn.QuitBurnApplication
 import com.example.quitburn.R
 import com.example.quitburn.data.MoodEnum
 import com.example.quitburn.data.PermissionManager
@@ -73,6 +75,7 @@ import com.example.quitburn.model.Progress
 import com.example.quitburn.model.ProgressDetail
 import com.example.quitburn.model.toMood
 import com.example.quitburn.model.toProgress
+import com.example.quitburn.ui.statistic.StatisticViewModelProvider
 import com.example.quitburn.ui.theme.QuitBurnTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -170,6 +173,9 @@ fun HomeContent(
     val progress by viewModel.allProgress.observeAsState(null)
     var openAlertDialog by remember { mutableStateOf(false) }
     var isShowAlertDialog by remember { mutableStateOf(false) }
+    if (progress != null) {
+        Log.d("AAA", "${progress!!.id}")
+    }
 
     val colorList = listOf(
         colorResource(id = R.color.circle1),
@@ -218,7 +224,8 @@ fun HomeContent(
                     onDismissRequest = {
                         isShowAlertDialog = !isShowAlertDialog
                         permissionManager.requestPermission(Manifest.permission.POST_NOTIFICATIONS)
-                    }
+                    },
+                    viewModel
                 )
             }
         }
@@ -590,8 +597,11 @@ fun AlertDialogMood(
 @Composable
 fun AlertDialogPermission(
     onConfirmation: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    viewModel: HomeViewModel
 ) {
+    viewModel.deleteProgress()
+    viewModel.deleteAllMoods()
     AlertDialog(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
@@ -666,6 +676,11 @@ fun AlertDialogMoodPreview() {
 @Composable
 fun AlertDialogPermissionPreview() {
     QuitBurnTheme {
-        AlertDialogPermission({},{})
+        AlertDialogPermission({},{}, viewModel(
+            factory = HomeViewModelProvider(
+                (LocalContext.current.applicationContext as QuitBurnApplication).moodRepository,
+                (LocalContext.current.applicationContext as QuitBurnApplication).progressRepository)
+        )
+        )
     }
 }

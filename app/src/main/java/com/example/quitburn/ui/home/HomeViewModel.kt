@@ -66,8 +66,16 @@ class HomeViewModel(
         repositoryMood.insertMood(mood)
     }
 
+    fun deleteAllMoods() = viewModelScope.launch {
+        repositoryMood.deleteAllMood()
+    }
+
     fun insertProgress(progress: Progress) = viewModelScope.launch {
         repositoryProgress.insertProgress(progress)
+    }
+
+    fun deleteProgress() = viewModelScope.launch {
+        repositoryProgress.deleteProgress()
     }
 
     fun updateProgress(progress: Progress) = viewModelScope.launch {
