@@ -1,12 +1,13 @@
 package com.example.quitburn.ui.statistic
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.util.Log
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,14 +21,22 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,9 +46,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -91,6 +102,19 @@ fun StatisticBody(
     val context = LocalContext.current
     val moods by viewModel.allMood.observeAsState(null)
     val progress by viewModel.allProgress.observeAsState(null)
+    var openAlertDialog by remember { mutableStateOf(false) }
+
+    when {
+        openAlertDialog -> {
+            HelpDialog(
+                onDismissRequest = { openAlertDialog = false },
+                onConfirmation = {
+                    openAlertDialog = false
+                },
+                context
+            )
+        }
+    }
 
     Column(
         modifier = modifier
@@ -120,8 +144,8 @@ fun StatisticBody(
                 Image(
                     modifier = Modifier
                         .width(40.dp)
-                        .clickable { },
-                    painter = painterResource(id = R.drawable.question), // Поменять картинку
+                        .clickable { openAlertDialog = true },
+                    painter = painterResource(id = R.drawable.question),
                     contentDescription = context.getString(R.string.help_user)
                 )
             }
@@ -134,8 +158,197 @@ fun StatisticBody(
                 viewModel.getDataForDiagram(moods!!, context)
             }
         }
-
+        if (progress != null) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = colorResource(id = R.color.additional_elem)
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(6.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.date_start),
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = progress!!.startDate,
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Card(
+                    modifier = Modifier
+                        .padding(end = 8.dp)
+                        .weight(0.5f),
+                    colors = CardDefaults.cardColors(
+                        containerColor = colorResource(id = R.color.circle7)
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .padding(6.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.count_stop),
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = progress!!.countStop.toString(),
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                Card(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .weight(0.5f),
+                    colors = CardDefaults.cardColors(
+                        containerColor = colorResource(id = R.color.diagram_star)
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .padding(6.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.max_count_days),
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            text = progress!!.maxCountDays.toString(),
+                            color = Color.White,
+                            textAlign = TextAlign.Center,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        }
     }
+}
+
+@Composable
+fun HelpDialog(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    context: Context
+) {
+    AlertDialog(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        containerColor = colorResource(R.color.circle6),
+        title = {
+            Text(
+                modifier = Modifier.width(300.dp),
+                text = stringResource(R.string.help_title),
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                val ruHotlineNumber = stringResource(id = R.string.ru_number)
+                val enHotlineNumber = stringResource(id = R.string.en_number)
+                Text(
+                    text = stringResource(id = R.string.ru_help_text),
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+                ClickableText(
+                    text = AnnotatedString(ruHotlineNumber),
+                    style = TextStyle(
+                        color = colorResource(id = R.color.circle7),
+                        fontSize = 18.sp,
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    onClick = { 
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$ruHotlineNumber"))
+                        context.startActivity(intent)
+                    }
+                )
+                Text(
+                    text = stringResource(id = R.string.en_help_text),
+                    color = Color.White,
+                    fontSize = 18.sp
+                )
+                ClickableText(
+                    text = AnnotatedString(enHotlineNumber),
+                    style = TextStyle(
+                        color = colorResource(id = R.color.circle7),
+                        fontSize = 18.sp,
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$enHotlineNumber"))
+                        context.startActivity(intent)
+                    }
+                )
+            }
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            Button(
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.additional_btn)
+                ),
+                onClick = { onConfirmation() }
+            ) {
+                Text(
+                    text = stringResource(R.string.close),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        },
+    )
 }
 
 @Composable
@@ -147,7 +360,7 @@ fun StatisticsBarChart(
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp)
-            .padding(start = 2.dp, end = 2.dp, top = 30.dp, bottom = 0.dp),
+            .padding(start = 2.dp, end = 2.dp, top = 25.dp, bottom = 0.dp),
         factory = { context ->
             BarChart(context).apply {
                 setDrawGridBackground(false)

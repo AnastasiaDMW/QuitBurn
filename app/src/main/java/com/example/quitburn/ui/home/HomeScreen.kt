@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -66,7 +65,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.quitburn.Constant.motivationList
 import com.example.quitburn.MainActivity
-import com.example.quitburn.QuitBurnApplication
 import com.example.quitburn.R
 import com.example.quitburn.data.MoodEnum
 import com.example.quitburn.data.PermissionManager
@@ -170,21 +168,17 @@ fun HomeContent(
     var index by remember { mutableIntStateOf(0) }
     val shapeValue = remember { androidx.compose.animation.core.Animatable(1f) }
     val progress by viewModel.allProgress.observeAsState(null)
-//    Log.d("AAAA", "progress: $progress")
     var openAlertDialog by remember { mutableStateOf(false) }
     var isShowAlertDialog by remember { mutableStateOf(false) }
+
     val colorList = listOf(
-        colorResource(id = R.color.accent_btn),
-        colorResource(id = R.color.pro_light_blue),
-        colorResource(id = R.color.blue),
-        colorResource(id = R.color.pro_blue),
-        colorResource(id = R.color.light_blue),
-        colorResource(id = R.color.teal_200),
-        colorResource(id = R.color.light_green_blue),
-        colorResource(id = R.color.additional_elem),
-        colorResource(id = R.color.light_green),
-        colorResource(id = R.color.pro_light_green),
-        colorResource(id = R.color.green),
+        colorResource(id = R.color.circle1),
+        colorResource(id = R.color.circle2),
+        colorResource(id = R.color.circle3),
+        colorResource(id = R.color.circle4),
+        colorResource(id = R.color.circle5),
+        colorResource(id = R.color.circle6),
+        colorResource(id = R.color.circle7),
     )
     var fullText by remember {
         mutableStateOf(false)
@@ -192,7 +186,7 @@ fun HomeContent(
 
     LaunchedEffect(Unit) {
         while (true) {
-            shapeValue.animateTo(1f, animationSpec = tween(1500))
+            shapeValue.animateTo(1.04f, animationSpec = tween(1500))
             shapeValue.animateTo(0.95f, animationSpec = tween(1500))
             delay(80)
         }
@@ -200,7 +194,7 @@ fun HomeContent(
     LaunchedEffect(Unit) {
         while (true) {
             index = colorList.indices.random()
-            delay(600)
+            delay(700)
         }
     }
     val bgColor by animateColorAsState(
@@ -257,7 +251,6 @@ fun HomeContent(
             }
         }
     }
-
 
     Column(
         modifier = modifier

@@ -20,11 +20,21 @@
     <color name="green">#FF428f61</color>
     <color name="light_green">#FF3fe07f</color>
     <color name="pro_light_green">#BEF852</color>
-    <color name="diagram_mad">#D73949</color>
-    <color name="diagram_star">#276073</color>
-    <color name="diagram_smile">#FF428f61</color>
-    <color name="diagram_happy">#35A0D6</color>
-    <color name="diagram_nausea">#819292</color>
-    <color name="diagram_dissappointed">#D97B24</color>
+    <color name="diagram_mad">#D2324F</color>
+    <color name="diagram_star">#F7A110</color>
+    <color name="diagram_smile">#8CB656</color>
+    <color name="diagram_happy">#D97B24</color>
+    <color name="diagram_nausea">#969CAB</color>
+    <color name="diagram_dissappointed">#602C44</color>
     <color name="diagram_cry">#0CA294</color>
+    <color name="number">#C0E0EF</color>
+    <color name="number2">#98DEFF</color>
+    //Цвета для анимированного круга
+    <color name="circle1">#D2324F</color>
+    <color name="circle2">#F7A110</color>
+    <color name="circle3">#8CB656</color>
+    <color name="circle4">#0CA294</color>
+    <color name="circle5">#FF3fe07f</color>
+    <color name="circle6">#D97B24</color>
+    <color name="circle7">#602C44</color>
 </resources>

@@ -1,13 +1,8 @@
 package com.example.quitburn.ui.statistic
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.drawable.Drawable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +13,6 @@ import com.example.quitburn.model.Mood
 import com.example.quitburn.model.Progress
 import com.example.quitburn.repository.MoodRepository
 import com.example.quitburn.repository.ProgressRepository
-import java.io.ByteArrayOutputStream
 
 class StatisticViewModel(
     private val repositoryMood: MoodRepository,
@@ -34,8 +28,6 @@ class StatisticViewModel(
     val moodCountList : List<Int> = _moodCountList
 
     fun getDataForDiagram(allMood: List<Mood>, context: Context) {
-        //[Mood(id=1, date=19.04.2024, moodName=Счастлив),
-        // Mood(id=2, date=22.04.2024, moodName=Настроение хорошее),
         _moodCountList.addAll(listOf(0,0,0,0,0,0,0))
         for(mood in allMood) {
             if (mood.moodName == context.getString(R.string.nausea_mood)){
