@@ -34,7 +34,7 @@
     <string name="happy_mood">Настроение хорошее</string>
     <string name="disappointed_mood">Грустный</string>
     <string name="cry_mood">Хочется плакать</string>
-    <string name="nausea_mood">Очень плохо</string>
+    <string name="nausea_mood">Болею</string>
     <string name="mad_mood">Злой</string>
 
     <string name="mood_statistic">Статистика дней</string>
