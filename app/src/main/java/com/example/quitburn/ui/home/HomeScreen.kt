@@ -235,14 +235,16 @@ fun HomeContent(
         if (!isSmoker){
             if (!isCheckMoodToday) {
                 if (!openAlertDialog) {
-                    viewModel.updateProgress(
-                        Progress(
-                            id = progress!!.id,
-                            startDate = progress!!.startDate,
-                            countStop = progress!!.countStop,
-                            maxCountDays = days
+                    if (progress != null){
+                        viewModel.updateProgress(
+                            Progress(
+                                id = progress!!.id,
+                                startDate = progress!!.startDate,
+                                countStop = progress!!.countStop,
+                                maxCountDays = days
+                            )
                         )
-                    )
+                    }
                     AlertDialogMood(
                         context = context,
                         viewModel = viewModel,
